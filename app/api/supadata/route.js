@@ -4,6 +4,7 @@ const ttl=365*86400;
 function equal(a,b){a=Buffer.from(String(a||''));b=Buffer.from(String(b||''));return a.length===b.length&&timingSafeEqual(a,b)}
 function sign(exp){return createHmac('sha256',process.env.TRANSCRIPT_ACCESS_PASSWORD).update('videotranscript-session:'+exp).digest('hex')}
 async function authorized(){if(!process.env.TRANSCRIPT_ACCESS_PASSWORD)return false;const token=(await cookies()).get('__Host-vt_session')?.value||'';const [exp,mac]=token.split('.');return /^\d+$/.test(exp||'')&&Number(exp)>Date.now()/1000&&equal(mac,sign(exp))}
+export async function PUT(req){const password=process.env.TRANSCRIPT_ACCESS_PASSWORD;if(!password)return Response.json({error:'Chybí nastavení hesla.'},{status:503});try{const {password:given}=await req.json();if(!equal(given,password))return Response.json({error:'Nesprávné heslo.'},{status:401});const exp=Math.floor(Date.now()/1000)+ttl;(await cookies()).set('__Host-vt_session',exp+'.'+sign(exp),{httpOnly:true,secure:true,sameSite:'strict',path:'/',maxAge:ttl});return Response.json({authorized:true})}catch{return Response.json({error:'Přihlášení selhalo.'},{status:400})}}
 export async function GET(){return Response.json({authorized:await authorized()},{headers:{'Cache-Control':'no-store'}})}
 export async function DELETE(){(await cookies()).set('__Host-vt_session','',{httpOnly:true,secure:true,sameSite:'strict',path:'/',maxAge:0});return Response.json({ok:true})}
 
