@@ -1,0 +1,7 @@
+package cz.videotranscript.app;
+import android.app.Activity;import android.os.Bundle;import android.content.Intent;import android.net.Uri;import android.widget.*;import java.util.regex.*;
+public class MainActivity extends Activity {
+ EditText input; TextView status;
+ @Override public void onCreate(Bundle b){super.onCreate(b);LinearLayout l=new LinearLayout(this);l.setOrientation(1);l.setPadding(32,64,32,32);TextView title=new TextView(this);title.setText("VideoTranscript");title.setTextSize(28);l.addView(title);input=new EditText(this);input.setHint("Odkaz na YouTube");l.addView(input);status=new TextView(this);status.setText("Vývojová verze – lokální přepis zatím není připojen.");l.addView(status);Button btn=new Button(this);btn.setText("Otevřít video");l.addView(btn);btn.setOnClickListener(v->{String id=extract(input.getText().toString());if(id==null){status.setText("Neplatný YouTube odkaz.");return;}startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v="+id)));});setContentView(l);if(Intent.ACTION_SEND.equals(getIntent().getAction()))input.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));}
+ static String extract(String s){Matcher m=Pattern.compile("https?://(?:www\\.|m\\.)?(?:youtu\\.be/|youtube\\.com/(?:watch\\?v=|shorts/))([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])").matcher(s);return m.find()?m.group(1):null;}
+}
