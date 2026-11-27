@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "VideoTranscript Companion",
+  "version": "0.1.0",
+  "description": "Předání dostupného YouTube přepisu do VideoTranscript",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*",
+    "https://video-transcript-plum.vercel.app/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://m.youtube.com/*"
+      ],
+      "js": [
+        "youtube.js"
+      ]
+    },
+    {
+      "matches": [
+        "https://video-transcript-plum.vercel.app/*"
+      ],
+      "js": [
+        "receiver.js"
+      ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "videotranscript-companion@local.example"
+    },
+    "gecko_android": {}
+  }
+}
