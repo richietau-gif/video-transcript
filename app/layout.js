@@ -1,1 +1,1 @@
-import './style.css'; export const metadata={title:'VideoTranscript',robots:{index:false,follow:false}}; export default function Layout({children}){return <html lang="cs"><body>{children}</body></html>}
+import './style.css'; export const metadata={title:'Richiho překladač',robots:{index:false,follow:false}}; export default function Layout({children}){return <html lang="cs"><body>{children}</body></html>}
